@@ -1,0 +1,58 @@
+================================================================
+PAKISTAN WATER SHORTAGE PREDICTION DASHBOARD
+================================================================
+
+1. PROJECT OVERVIEW
+-------------------
+This project is a machine learning-powered dashboard designed to predict agricultural water shortage 
+across various districts in Pakistan. It helps farmers and policymakers make data-driven decisions 
+by analyzing historical weather data, crop water demands, and soil characteristics.
+
+Key Features:
+- Single Prediction: Estimate water shortage for a specific crop and district.
+- Map View: Visualize water scarcity across all districts on an interactive map.
+- Supplemental Water: Account for irrigation from tube wells/canals.
+- Detailed Analysis: View breakdown of Rainfall vs. Irrigation vs. Deficit.
+
+2. PREREQUISITES
+----------------
+- Python 3.9 or higher
+- Internet connection (for loading maps and libraries)
+
+3. INSTALLATION
+---------------
+1. Open a terminal or command prompt.
+2. Navigate to the 'dashboard' directory:
+   cd dashboard
+
+3. Install the required Python libraries:
+   pip install -r requirements.txt
+
+4. HOW TO RUN
+-------------
+To start the application, run the following command in your terminal (inside the 'dashboard' folder):
+
+   streamlit run Dashboard.py
+
+The dashboard will open automatically in your default web browser (usually at http://localhost:8501).
+
+5. PROJECT STRUCTURE
+--------------------
+- Dashboard.py           : Main application entry point.
+- config.py              : Configuration settings (Districts, Crops, Colors).
+- requirements.txt       : List of Python dependencies.
+- pages/                 : Contains the different views (Prediction, Map, About).
+- utils/                 : Helper scripts for ML logic, UI styling, and visualizations.
+- data/                  : Contains the dataset (Cleaned_Pakistan_Water_Dataset_updated.csv).
+- models/                : Contains the trained machine learning models.
+
+6. TROUBLESHOOTING
+------------------
+- If you see a "File not found" error, ensure you are in the correct directory ('dashboard').
+- If the map doesn't load, check your internet connection.
+- If you encounter port errors, try running on a different port:
+  streamlit run Dashboard.py --server.port 8502
+
+================================================================
+© 2025 Water Intelligence Initiative
+================================================================
