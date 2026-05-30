@@ -45,7 +45,7 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.markdown("""
     <div class="metric-card">
-        <div class="metric-value">26</div>
+        <div class="metric-value">20</div>
         <div class="metric-label">Districts Covered</div>
     </div>
     """, unsafe_allow_html=True)
