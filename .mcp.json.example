@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "stitch": {
+      "command": "npx",
+      "args": ["-y", "@_davideast/stitch-mcp", "proxy"],
+      "env": {
+        "STITCH_PROJECT_ID": "your-stitch-project-id",
+        "STITCH_API_KEY": "your-stitch-api-key",
+        "CLOUDSDK_CONFIG": "C:\\Users\\YOUR_USER\\.stitch-mcp\\config"
+      }
+    }
+  }
+}

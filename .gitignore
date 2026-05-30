@@ -60,3 +60,10 @@ logs/
 
 # Stitch raw downloads (reference only; live UI is in frontend/templates/)
 frontend/stitch-original/
+
+# MCP server config — contains API keys and project IDs.
+# See .mcp.json.example for the expected structure.
+.mcp.json
+
+# Local working notes, not for the public repo
+STITCH_PROMPT.md
