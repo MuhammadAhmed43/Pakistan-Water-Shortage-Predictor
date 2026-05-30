@@ -61,13 +61,20 @@ The system has three logical layers:
 2. **Modelling layer.** A monthly rainfall regressor trained on lagged and
    cyclical features, plus deterministic agronomic calculations that convert the
    predicted supply into a per-crop sufficiency index.
-3. **Application layer.** A multi-page Streamlit dashboard for single-point
-   predictions, district-wide map visualisation and methodological reference.
+3. **Application layer.** The project ships with two interchangeable
+   frontends that share the same predictor:
+   - **FastAPI + Stitch UI** (primary): a polished, editorial dashboard
+     designed in [Stitch](https://stitch.withgoogle.com) and served by
+     FastAPI. Lives in `app.py`, `backend/`, `frontend/`. Run with
+     `uvicorn app:app`.
+   - **Streamlit** (legacy): the original multi-page Streamlit dashboard.
+     Lives in `dashboard/`. Run with `streamlit run dashboard/Dashboard.py`.
 
 The notebook `ML_project.ipynb` contains the offline workflow used during
 development (exploratory analysis, feature engineering, model comparison and
-metrics). The `dashboard/` package is the production-style application that
-reuses the same preprocessing and modelling logic at runtime.
+metrics). Both application layers reuse the same preprocessing and modelling
+logic at runtime; the FastAPI layer talks to `backend.predictor` (no Streamlit
+dependency), while the Streamlit layer talks to `dashboard.utils.predictor`.
 
 ## Repository Layout
 
@@ -76,20 +83,28 @@ reuses the same preprocessing and modelling logic at runtime.
 ├── ML_project.ipynb                 Full data-science workflow and model comparison
 ├── README.md                        This document
 ├── .gitignore
-└── dashboard/                       Streamlit application
+├── requirements.txt                 FastAPI app dependencies
+├── app.py                           FastAPI entry point
+├── backend/                         Streamlit-free predictor + reference data
+│   ├── predictor.py                 Model training, encoding and WSI calculation
+│   └── constants.py                 Districts, crops, soils, coordinates, metrics
+├── frontend/                        Stitch-designed UI
+│   ├── templates/                   Jinja2 templates (base, overview, predict, map, about)
+│   ├── static/
+│   │   ├── css/custom.css
+│   │   └── js/                      predict.js, map.js
+│   └── stitch-original/             Raw HTML downloaded from Stitch (reference)
+└── dashboard/                       Legacy Streamlit application
     ├── Dashboard.py                 Landing page and entry point
     ├── config.py                    Districts, crops, soil types, colours, thresholds
-    ├── requirements.txt             Pinned Python dependencies
-    ├── README.md                    Dashboard-only quick reference
-    ├── QUICKSTART.md                Short installation walkthrough
-    ├── .streamlit/
-    │   └── config.toml              Streamlit theme configuration
-    ├── pages/
-    │   ├── 01_Make_Prediction.py    Single-point prediction interface
-    │   ├── 02_Map_View.py           District-wide interactive map
-    │   └── 03_About.py              In-app documentation
-    ├── utils/
-    │   ├── predictor.py             Model training, encoding and WSI calculation
+    ├── requirements.txt             Streamlit-app dependencies
+    ├── .streamlit/config.toml       Streamlit theme configuration
+    ├── pages/                       Streamlit page scripts
+    │   ├── 01_Make_Prediction.py
+    │   ├── 02_Map_View.py
+    │   └── 03_About.py
+    ├── utils/                       Reusable Python modules
+    │   ├── predictor.py             Streamlit-wrapped predictor
     │   ├── map_generator.py         Folium choropleth and marker layer
     │   ├── visualizations.py        Plotly gauges, pies, trend charts
     │   └── ui.py                    Global styling and layout helpers
@@ -293,7 +308,47 @@ Pillow>=10.0.0
 
 ## Running the Application
 
-From the repository root:
+### Primary: FastAPI + Stitch UI
+
+This is the production-style frontend, built on a Stitch-designed UI served
+through FastAPI templates with a small JSON API for the prediction logic.
+
+Install the FastAPI dependencies (in addition to the Streamlit ones, which
+share most of the same packages):
+
+```bash
+pip install -r requirements.txt
+```
+
+Then launch from the repository root:
+
+```bash
+uvicorn app:app --reload --port 8000
+```
+
+Open `http://127.0.0.1:8000`. The first request triggers a one-off training
+pass on the CSV; subsequent requests are served from cache.
+
+The app exposes four pages and a small JSON API:
+
+| Path           | What it serves                                              |
+|----------------|-------------------------------------------------------------|
+| `GET /`        | Overview / landing page                                     |
+| `GET /predict` | Single-point prediction form and results                    |
+| `GET /map`     | District-wide map view with Leaflet                         |
+| `GET /about`   | Methodology and model card                                  |
+| `POST /api/predict`     | JSON prediction for one district / crop                |
+| `POST /api/map`         | JSON predictions for every supported district          |
+| `POST /api/predict/csv` | CSV download of one prediction                         |
+| `GET /api/health`       | Liveness check; returns 200 when the model is loaded   |
+
+The Stitch source files that the templates were derived from are kept in
+`frontend/stitch-original/` for reference and future re-design rounds.
+
+### Legacy: Streamlit dashboard
+
+The original Streamlit dashboard is still in `dashboard/` and remains
+fully functional. From the repository root:
 
 ```bash
 streamlit run dashboard/Dashboard.py

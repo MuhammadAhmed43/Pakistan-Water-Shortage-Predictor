@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Overview · Pakistan Water Shortage Predictor{% endblock %}
+{% block topbar_title %}Overview{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="relative min-h-[640px] px-margin-mobile md:px-margin-desktop py-24 flex items-center bg-surface-container-low border-b border-outline-variant topo-bg">
+    <div class="max-w-[1440px] mx-auto w-full z-10">
+        <div class="max-w-3xl">
+            <p class="text-label-caps font-label-caps text-secondary tracking-widest uppercase mb-6">Water Intelligence for Pakistan's Agriculture</p>
+            <h2 class="text-display-lg font-display-lg text-primary leading-tight mb-8">
+                Forecasting water shortage where it matters most &mdash; at the district, in the month, for the crop you grow.
+            </h2>
+            <p class="text-headline-sm font-headline-sm text-on-surface-variant mb-12 opacity-80 font-nastaliq" dir="rtl" lang="ur">
+                پانی کی کمی کی پیش گوئی &mdash; ضلع، مہینے اور فصل کی سطح پر۔
+            </p>
+            <p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mb-10 leading-relaxed">
+                A machine-learning system that combines monthly rainfall prediction with FAO-style crop water demand, producing an interpretable Water Sufficiency Index for every supported district and crop.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <a href="/predict" class="bg-primary text-on-primary px-8 py-4 rounded-lg font-label-caps text-label-caps uppercase tracking-wider hover:bg-on-background transition-colors shadow-sm">
+                    Make a Prediction
+                </a>
+                <a href="/map" class="border border-outline text-primary px-8 py-4 rounded-lg font-label-caps text-label-caps uppercase tracking-wider hover:bg-surface-container transition-colors">
+                    Open the Map
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vision -->
+<section class="px-margin-mobile md:px-margin-desktop py-24 bg-surface-container-low border-b border-outline-variant">
+    <div class="max-w-[1440px] mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <div class="lg:col-span-8">
+                <h3 class="text-display-lg font-display-lg text-primary mb-8">Our Vision</h3>
+                <p class="text-body-lg font-body-lg text-on-surface-variant leading-relaxed max-w-2xl">
+                    Pakistan's agricultural sector accounts for roughly ninety percent of national freshwater withdrawal, yet farmers and planners often lack timely district-level visibility into how much rainfall a coming month is likely to deliver, and whether it will meet the demand of the crops they have planted. This dashboard exists to close that gap with a transparent, auditable, decision-grade forecast.
+                </p>
+            </div>
+            <div class="lg:col-span-4 space-y-12">
+                <div>
+                    <h4 class="text-label-caps font-label-caps text-secondary uppercase mb-3 border-b border-outline-variant pb-2">Data</h4>
+                    <p class="text-body-md font-body-md text-on-surface-variant">Nine years of historical weather, crop, and soil records harmonised into a single time-aware dataset.</p>
+                </div>
+                <div>
+                    <h4 class="text-label-caps font-label-caps text-secondary uppercase mb-3 border-b border-outline-variant pb-2">Method</h4>
+                    <p class="text-body-md font-body-md text-on-surface-variant">A gradient-boosting rainfall model combined with FAO Paper 56 crop coefficients and a soil retention factor.</p>
+                </div>
+                <div>
+                    <h4 class="text-label-caps font-label-caps text-secondary uppercase mb-3 border-b border-outline-variant pb-2">Access</h4>
+                    <p class="text-body-md font-body-md text-on-surface-variant">Built for farmers, extension officers, agricultural researchers and district-level planners.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Impact Metric Strip -->
+<section class="px-margin-mobile md:px-margin-desktop py-16 border-b border-outline-variant bg-surface-bright">
+    <div class="max-w-[1440px] mx-auto">
+        <p class="text-label-caps font-label-caps text-secondary uppercase tracking-widest mb-8">Project at a glance</p>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="p-6 border border-outline-variant rounded-lg bg-surface-container-lowest">
+                <p class="text-label-caps font-label-caps text-on-surface-variant uppercase mb-2">Districts Covered</p>
+                <p class="text-display-lg font-display-lg text-primary tnum">{{ metrics.districts_covered }}</p>
+            </div>
+            <div class="p-6 border border-outline-variant rounded-lg bg-surface-container-lowest">
+                <p class="text-label-caps font-label-caps text-on-surface-variant uppercase mb-2">Major Crops</p>
+                <p class="text-display-lg font-display-lg text-primary tnum">{{ metrics.major_crops }}</p>
+            </div>
+            <div class="p-6 border border-outline-variant rounded-lg bg-surface-container-lowest">
+                <p class="text-label-caps font-label-caps text-on-surface-variant uppercase mb-2">Years of Data</p>
+                <p class="text-display-lg font-display-lg text-primary tnum">{{ metrics.years_of_data }}</p>
+            </div>
+            <div class="p-6 border border-outline-variant rounded-lg bg-surface-container-lowest">
+                <p class="text-label-caps font-label-caps text-on-surface-variant uppercase mb-2">Model</p>
+                <p class="text-headline-md font-headline-md text-primary mt-4 leading-none">Gradient<br>Boosting</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Methodology Teaser -->
+<section class="px-margin-mobile md:px-margin-desktop py-24 bg-surface-container-low border-b border-outline-variant">
+    <div class="max-w-[1440px] mx-auto">
+        <h3 class="text-label-caps font-label-caps text-secondary tracking-widest uppercase mb-16">How the index is computed</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="relative pl-8 border-l border-outline-variant">
+                <span class="absolute -left-[16px] top-0 text-label-caps font-label-caps bg-surface-container-low text-secondary px-1">01</span>
+                <h4 class="text-headline-md font-headline-md text-primary mb-4">Predict Rainfall</h4>
+                <p class="text-body-md font-body-md text-on-surface-variant">A gradient-boosting regressor predicts monthly rainfall from lagged history, cyclical seasonality, temperature, humidity, wind, and solar radiation.</p>
+            </div>
+            <div class="relative pl-8 border-l border-outline-variant">
+                <span class="absolute -left-[16px] top-0 text-label-caps font-label-caps bg-surface-container-low text-secondary px-1">02</span>
+                <h4 class="text-headline-md font-headline-md text-primary mb-4">Derive Supply</h4>
+                <p class="text-body-md font-body-md text-on-surface-variant">Rainfall is multiplied by a soil retention factor and added to any supplemental irrigation the user reports to produce the effective water supply.</p>
+            </div>
+            <div class="relative pl-8 border-l border-outline-variant">
+                <span class="absolute -left-[16px] top-0 text-label-caps font-label-caps bg-surface-container-low text-secondary px-1">03</span>
+                <h4 class="text-headline-md font-headline-md text-primary mb-4">Compute WSI</h4>
+                <p class="text-body-md font-body-md text-on-surface-variant">The Water Sufficiency Index is the ratio of supply to crop water demand, expressed as a percentage and mapped to a five-level severity class.</p>
+            </div>
+        </div>
+        <div class="mt-12">
+            <a href="/about" class="text-label-caps font-label-caps uppercase tracking-wider text-primary hover:text-on-background border-b border-primary pb-1 transition-colors">Read the full methodology &rarr;</a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-primary text-on-primary px-margin-mobile md:px-margin-desktop py-16">
+    <div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+        <div>
+            <h2 class="text-headline-md font-headline-md font-bold mb-2">Pakistan Water Shortage Predictor</h2>
+            <p class="text-data-point font-data-point text-primary-fixed-dim uppercase tracking-wider">Built for sustainable agriculture in Pakistan.</p>
+        </div>
+        <div class="text-left md:text-right">
+            <p class="text-label-caps font-label-caps text-primary-fixed-dim uppercase tracking-wider mb-2">Acknowledgements</p>
+            <p class="text-body-md font-body-md opacity-80 text-sm">FAO Paper 56 &middot; NASA POWER &middot; Pakistan Bureau of Statistics</p>
+        </div>
+    </div>
+</footer>
+{% endblock %}

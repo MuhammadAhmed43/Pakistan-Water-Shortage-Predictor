@@ -1,0 +1,98 @@
+/* Custom polish on top of Tailwind utility classes. */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tabular numerals for any numeric output */
+.tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+
+/* Quiet shimmer used on loading placeholders */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.shimmer {
+    background: linear-gradient(90deg, rgba(220, 222, 215, 0.0), rgba(220, 222, 215, 0.4), rgba(220, 222, 215, 0.0));
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+}
+
+/* Field focus ring without browser default */
+.custom-input:focus, select:focus, input:focus {
+    outline: none;
+    border-color: #505f76;
+    box-shadow: 0 0 0 2px rgba(208, 225, 251, 0.55);
+}
+
+/* Native sliders styled */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    width: 100%;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: #c0c9be;
+    border-radius: 999px;
+}
+input[type="range"]::-moz-range-track {
+    height: 4px;
+    background: #c0c9be;
+    border-radius: 999px;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 9999px;
+    background: #f8faf4;
+    border: 1.5px solid #00290f;
+    margin-top: -7px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+input[type="range"]::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 9999px;
+    background: #f8faf4;
+    border: 1.5px solid #00290f;
+    cursor: pointer;
+}
+
+/* Leaflet marker pulses (Map View) */
+.severity-marker {
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+    border-radius: 9999px;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    font-family: "Inter", system-ui, sans-serif;
+}
+
+.leaflet-popup-content {
+    margin: 12px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Editorial topographic background hint */
+.topo-bg {
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(1, 65, 28, 0.04) 0, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(1, 65, 28, 0.03) 0, transparent 40%);
+}

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}About · Pakistan Water Shortage Predictor{% endblock %}
+{% block topbar_title %}About{% endblock %}
+
+{% block content %}
+<div class="flex-1 overflow-y-auto w-full">
+    <div class="max-w-[760px] mx-auto px-gutter py-16 flex flex-col gap-16">
+
+        <section class="flex flex-col gap-6">
+            <p class="text-label-caps font-label-caps text-secondary uppercase tracking-widest border-b border-outline-variant pb-2 inline-block w-fit">Documentation</p>
+            <h1 class="text-display-lg font-display-lg text-primary leading-tight">How this dashboard thinks about water shortage</h1>
+            <p class="text-body-lg font-body-lg text-on-surface-variant leading-relaxed">
+                The Pakistan Water Shortage Predictor pairs a gradient-boosting rainfall model with the standard FAO water-balance approach to produce a Water Sufficiency Index (WSI) for every supported district and crop. It is intended as decision support &mdash; a quantitative second opinion alongside on-ground observation, not a substitute for it.
+            </p>
+        </section>
+
+        <section class="flex flex-col gap-8">
+            <h2 class="text-headline-md font-headline-md text-primary border-b border-outline-variant pb-4">Methodology</h2>
+            <div class="flex flex-col gap-8">
+                <div class="flex gap-6">
+                    <div class="shrink-0 w-9 h-9 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-label-caps font-label-caps text-primary">01</div>
+                    <div class="flex flex-col gap-3">
+                        <h3 class="text-body-lg font-body-lg font-bold text-on-surface">Predict monthly rainfall</h3>
+                        <p class="text-body-md font-body-md text-on-surface-variant">The model predicts millimetres of rainfall for the chosen district, month, and year using eight features: previous-month rainfall, cyclical month encoding (sin/cos), year, temperature, humidity, wind speed, and solar radiation. Missing weather inputs fall back to the historical district mean for that month.</p>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <div class="shrink-0 w-9 h-9 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-label-caps font-label-caps text-primary">02</div>
+                    <div class="flex flex-col gap-3">
+                        <h3 class="text-body-lg font-body-lg font-bold text-on-surface">Derive effective water supply</h3>
+                        <p class="text-body-md font-body-md text-on-surface-variant">Not all rainfall is usable: some runs off, some percolates beyond the root zone. A soil-retention factor scales the prediction. Any supplemental irrigation the user reports is added on top.</p>
+                        <div class="bg-surface-container-low border border-outline-variant p-5 rounded-lg mt-2">
+                            <code class="text-data-point font-data-point text-primary block">effective_supply = (rainfall &times; soil_factor) + irrigation</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <div class="shrink-0 w-9 h-9 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-label-caps font-label-caps text-primary">03</div>
+                    <div class="flex flex-col gap-3">
+                        <h3 class="text-body-lg font-body-lg font-bold text-on-surface">Compute the Water Sufficiency Index</h3>
+                        <p class="text-body-md font-body-md text-on-surface-variant">Crop water demand is taken from the dataset (where present) or imputed as the average for that crop. The WSI is the ratio of supply to demand, expressed as a percentage, then mapped to a five-level severity class.</p>
+                        <div class="bg-surface-container-low border border-outline-variant p-5 rounded-lg mt-2">
+                            <code class="text-data-point font-data-point text-primary block">WSI = (effective_supply / crop_water_demand) &times; 100</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="flex flex-col gap-8">
+            <h2 class="text-headline-md font-headline-md text-primary border-b border-outline-variant pb-4">Severity scale</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant p-4 rounded-lg"><span class="w-3 h-3 rounded-full bg-severity-none"></span><span class="text-body-md font-body-md text-on-surface font-bold">No Shortage</span><span class="ml-auto text-label-caps font-label-caps text-on-surface-variant uppercase tnum">WSI &ge; 100</span></div>
+                <div class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant p-4 rounded-lg"><span class="w-3 h-3 rounded-full bg-severity-mild"></span><span class="text-body-md font-body-md text-on-surface font-bold">Mild</span><span class="ml-auto text-label-caps font-label-caps text-on-surface-variant uppercase tnum">80 &le; WSI &lt; 100</span></div>
+                <div class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant p-4 rounded-lg"><span class="w-3 h-3 rounded-full bg-severity-moderate"></span><span class="text-body-md font-body-md text-on-surface font-bold">Moderate</span><span class="ml-auto text-label-caps font-label-caps text-on-surface-variant uppercase tnum">60 &le; WSI &lt; 80</span></div>
+                <div class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant p-4 rounded-lg"><span class="w-3 h-3 rounded-full bg-severity-severe"></span><span class="text-body-md font-body-md text-on-surface font-bold">Severe</span><span class="ml-auto text-label-caps font-label-caps text-on-surface-variant uppercase tnum">40 &le; WSI &lt; 60</span></div>
+                <div class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant p-4 rounded-lg md:col-span-2"><span class="w-3 h-3 rounded-full bg-severity-critical"></span><span class="text-body-md font-body-md text-on-surface font-bold">Critical</span><span class="ml-auto text-label-caps font-label-caps text-on-surface-variant uppercase tnum">WSI &lt; 40</span></div>
+            </div>
+        </section>
+
+        <section class="flex flex-col gap-8">
+            <h2 class="text-headline-md font-headline-md text-primary border-b border-outline-variant pb-4">Model card</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-label-caps font-label-caps text-secondary uppercase tracking-wider mb-2">Algorithm</p>
+                    <p class="text-body-lg font-body-lg text-on-surface font-bold">{{ model_metrics.algorithm }}</p>
+                    <p class="text-body-md font-body-md text-on-surface-variant mt-3">Retrained at runtime from the cleaned dataset on first request. The notebook also benchmarks a stacking ensemble (Gradient Boosting + Random Forest with a Ridge final estimator).</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-label-caps font-label-caps text-secondary uppercase tracking-wider mb-2">Training Window</p>
+                    <p class="text-body-lg font-body-lg text-on-surface font-bold tnum">{{ model_metrics.training_period }}</p>
+                    <p class="text-body-md font-body-md text-on-surface-variant mt-3">{{ "{:,}".format(model_metrics.training_rows) }} rows after cleaning and feature engineering. Eight features feed the regressor.</p>
+                </div>
+            </div>
+            <div class="bg-surface-container-highest border border-outline-variant rounded-lg p-6">
+                <p class="text-label-caps font-label-caps text-secondary uppercase tracking-wider mb-6">Held-out evaluation</p>
+                <div class="flex divide-x divide-outline-variant">
+                    <div class="flex flex-col gap-1 px-6 first:pl-0 text-center w-full">
+                        <span class="text-display-lg font-display-lg text-primary tnum">{{ model_metrics.mae }}</span>
+                        <span class="text-label-caps font-label-caps text-on-surface-variant uppercase">MAE (mm)</span>
+                    </div>
+                    <div class="flex flex-col gap-1 px-6 text-center w-full">
+                        <span class="text-display-lg font-display-lg text-primary tnum">{{ model_metrics.rmse }}</span>
+                        <span class="text-label-caps font-label-caps text-on-surface-variant uppercase">RMSE</span>
+                    </div>
+                    <div class="flex flex-col gap-1 px-6 last:pr-0 text-center w-full">
+                        <span class="text-display-lg font-display-lg text-primary tnum">{{ model_metrics.r2 }}</span>
+                        <span class="text-label-caps font-label-caps text-on-surface-variant uppercase">R²</span>
+                    </div>
+                </div>
+                <p class="text-body-md font-body-md text-on-surface-variant mt-6 leading-relaxed">
+                    The R² is intentionally reported as-is. Monthly rainfall is intrinsically hard to forecast from a small feature set, and the model is most useful as a <em>relative</em> ranking across districts and months rather than as a precise meteorological prediction. Improving skill is a roadmap item &mdash; satellite NDVI, ENSO indices, and longer history windows are the most promising additions.
+                </p>
+            </div>
+        </section>
+
+        <section class="flex flex-col gap-8">
+            <h2 class="text-headline-md font-headline-md text-primary border-b border-outline-variant pb-4">Coverage</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="flex flex-col gap-4">
+                    <h3 class="text-body-lg font-body-lg font-bold text-on-surface">Districts (Punjab)</h3>
+                    <ul class="text-body-md font-body-md text-on-surface-variant space-y-1.5 border-l border-outline-variant pl-4 columns-2">
+                        {% for d in districts %}<li>{{ d }}</li>{% endfor %}
+                    </ul>
+                </div>
+                <div class="flex flex-col gap-4">
+                    <h3 class="text-body-lg font-body-lg font-bold text-on-surface">Crops</h3>
+                    <ul class="text-body-md font-body-md text-on-surface-variant space-y-1.5 border-l border-outline-variant pl-4 columns-2">
+                        {% for c in crops %}<li>{{ c }}</li>{% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="flex flex-col gap-4 pb-8">
+            <h2 class="text-headline-md font-headline-md text-primary border-b border-outline-variant pb-4">References</h2>
+            <ul class="text-body-md font-body-md text-on-surface-variant space-y-3 leading-relaxed">
+                <li>Allen, R.G., Pereira, L.S., Raes, D., Smith, M. (1998). <em>Crop evapotranspiration &mdash; Guidelines for computing crop water requirements</em>. FAO Irrigation and Drainage Paper 56.</li>
+                <li>NASA POWER. Prediction of Worldwide Energy Resources. Reanalysis-based meteorological time series.</li>
+                <li>Pakistan Bureau of Statistics. District-level agricultural production statistics.</li>
+                <li>Streamlit, scikit-learn, pandas, Plotly, Folium, Leaflet &mdash; the open-source projects on which this dashboard is built.</li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- Disclaimer band -->
+    <div class="w-full bg-inverse-surface text-inverse-on-surface py-12 px-gutter border-t-4 border-error">
+        <div class="max-w-[760px] mx-auto flex flex-col gap-4">
+            <div class="flex items-center gap-2 text-error-container">
+                <span class="material-symbols-outlined">warning</span>
+                <span class="text-label-caps font-label-caps uppercase tracking-wider">Disclaimer</span>
+            </div>
+            <p class="text-body-md font-body-md opacity-90 leading-relaxed">
+                Outputs are probabilistic estimates based on historical data and a machine-learning model whose R² on held-out data is low. They are intended as decision support, not as statutory forecasts of water availability. Cropping, irrigation, and emergency-response decisions should always be made in consultation with local agricultural extension services and verified by on-ground observation.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

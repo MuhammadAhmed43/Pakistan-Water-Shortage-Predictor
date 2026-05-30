@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>{% block title %}Pakistan Water Shortage Predictor{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/custom.css') }}">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f2f4ee",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2e312d",
+                        "tertiary-container": "#5f2331",
+                        "background": "#f8faf4",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e1e3dd",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-surface": "#191c19",
+                        "tertiary-fixed": "#ffd9de",
+                        "secondary": "#505f76",
+                        "on-primary-container": "#74ae7e",
+                        "on-primary-fixed": "#00210b",
+                        "on-secondary-fixed": "#0b1c30",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-background": "#191c19",
+                        "inverse-on-surface": "#eff1eb",
+                        "tertiary": "#440d1c",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#99d5a2",
+                        "outline": "#717970",
+                        "outline-variant": "#c0c9be",
+                        "primary-container": "#01411c",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#d0e1fb",
+                        "surface-container": "#ecefe8",
+                        "primary-fixed": "#b4f1bc",
+                        "tertiary-fixed-dim": "#ffb2be",
+                        "surface-container-high": "#e7e9e3",
+                        "surface": "#f8faf4",
+                        "primary-fixed-dim": "#99d5a2",
+                        "surface-bright": "#f8faf4",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#414941",
+                        "surface-dim": "#d8dbd5",
+                        "on-tertiary-fixed-variant": "#723240",
+                        "on-tertiary-container": "#dc8998",
+                        "on-primary-fixed-variant": "#17512a",
+                        "primary": "#00290f",
+                        "on-tertiary-fixed": "#3b0616",
+                        "surface-tint": "#326a40",
+                        "secondary-fixed": "#d3e4fe",
+                        "surface-container-highest": "#e1e3dd",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#54647a",
+                        "severity-none": "#2F7D4F",
+                        "severity-mild": "#6DA579",
+                        "severity-moderate": "#D6A848",
+                        "severity-severe": "#C7702C",
+                        "severity-critical": "#8E2A1F"
+                    },
+                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+                    spacing: {
+                        "container-padding": "32px",
+                        "margin-desktop": "40px",
+                        gutter: "24px",
+                        "margin-mobile": "16px",
+                        base: "8px"
+                    },
+                    fontFamily: {
+                        "headline-sm": ["Source Serif 4"],
+                        "data-point": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Source Serif 4"],
+                        "label-caps": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Source Serif 4"],
+                        nastaliq: ["Noto Nastaliq Urdu"]
+                    },
+                    fontSize: {
+                        "headline-sm": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "data-point": ["14px", { lineHeight: "20px", fontWeight: "600" }],
+                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+                        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "500" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "headline-md": ["32px", { lineHeight: "40px", fontWeight: "600" }]
+                    }
+                }
+            }
+        };
+    </script>
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex">
+    <!-- Sidebar -->
+    <nav class="fixed left-0 top-0 h-full w-[280px] flex flex-col z-50 bg-primary-container hidden md:flex">
+        <div class="px-6 py-8 border-b border-white/10">
+            <h1 class="text-headline-md font-headline-md font-bold text-surface-bright leading-tight">Pakistan Water<br>Shortage Predictor</h1>
+            <p class="text-data-point font-data-point mt-2 text-surface-bright/70 uppercase tracking-wider">Decision-grade Water Intelligence</p>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            {% set nav_items = [
+                ('overview', '/', 'dashboard', 'Overview'),
+                ('predict', '/predict', 'analytics', 'Make Prediction'),
+                ('map', '/map', 'map', 'Map View'),
+                ('about', '/about', 'info', 'About')
+            ] %}
+            {% for key, href, icon, label in nav_items %}
+                {% if key == active %}
+                    <a class="flex items-center gap-4 px-6 py-4 font-bold border-l-4 border-primary-fixed-dim bg-white/15 text-surface-bright transition-colors duration-200" href="{{ href }}">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">{{ icon }}</span>
+                        <span class="text-label-caps font-label-caps uppercase">{{ label }}</span>
+                    </a>
+                {% else %}
+                    <a class="flex items-center gap-4 px-6 py-4 text-surface-bright/70 hover:bg-white/10 hover:text-surface-bright border-l-4 border-transparent transition-colors duration-200" href="{{ href }}">
+                        <span class="material-symbols-outlined">{{ icon }}</span>
+                        <span class="text-label-caps font-label-caps uppercase">{{ label }}</span>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="p-6 border-t border-white/10 space-y-3">
+            <div class="flex items-center gap-3 text-surface-bright/60">
+                <span class="material-symbols-outlined text-[18px]">memory</span>
+                <span class="text-label-caps font-label-caps uppercase">Gradient Boosting</span>
+            </div>
+            <div class="flex items-center gap-3 text-surface-bright/60">
+                <span class="material-symbols-outlined text-[18px]">layers</span>
+                <span class="text-label-caps font-label-caps uppercase">26 Punjab Districts</span>
+            </div>
+            <div class="flex items-center gap-3 text-surface-bright/60">
+                <span class="material-symbols-outlined text-[18px]">history</span>
+                <span class="text-label-caps font-label-caps uppercase">Trained on 33,696 rows</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-1 md:ml-[280px] flex flex-col min-h-screen">
+        {% block topbar %}
+        <header class="flex justify-between items-center w-full h-16 px-margin-desktop bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-40">
+            <div class="flex items-center gap-4">
+                <h2 class="text-headline-sm font-headline-sm text-primary font-bold">{% block topbar_title %}{% endblock %}</h2>
+            </div>
+            <div class="flex items-center gap-6 text-on-surface-variant">
+                <a href="/about" class="text-label-caps font-label-caps uppercase tracking-wider hover:text-primary transition-colors">Methodology</a>
+                <a href="https://github.com/MuhammadAhmed43/Pakistan-Water-Shortage-Predictor" target="_blank" rel="noopener" class="hover:text-primary transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined">code</span>
+                    <span class="text-label-caps font-label-caps uppercase tracking-wider hidden lg:inline">Source</span>
+                </a>
+            </div>
+        </header>
+        {% endblock %}
+
+        <main class="flex-1">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

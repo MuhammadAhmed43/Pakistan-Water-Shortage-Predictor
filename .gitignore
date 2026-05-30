@@ -57,3 +57,6 @@ desktop.ini
 # Logs
 *.log
 logs/
+
+# Stitch raw downloads (reference only; live UI is in frontend/templates/)
+frontend/stitch-original/
